@@ -117,6 +117,7 @@ public:
         mtx.unlock();
     }
 
+private:
     void unsafe_update(VmbFrame_t *frame)
     {
         if (width != frame->width || height != frame->height || pixelFormat != frame->pixelFormat)

@@ -39,7 +39,7 @@ endif
 
 all: CFLAGS+= -O2
 
-GUITARGET=client.out
+GUITARGET=imagegen.out
 
 all: clean $(GUITARGET)
 	$(ECHO) "Built for $(UNAME_S), execute ./$(GUITARGET)"

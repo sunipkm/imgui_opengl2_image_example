@@ -84,6 +84,34 @@ public:
         delete[] data;
     }
 
+    void start()
+    {
+        running = true;
+        firstrun = true;
+        avg = 0;
+        avg2 = 0;
+        count = 0;
+        thread = std::thread(ImageGenerator::generate_fn, this);
+    }
+
+    void join()
+    {
+        running = false;
+        thread.join();
+    }
+
+    bool isrunning()
+    {
+        return running;
+    }
+
+    void get_stats(double &avg, double &stddev)
+    {
+        avg = this->avg;
+        stddev = sqrt(avg2 - avg * avg);
+    }
+
+private:
     void generate()
     {
         if (firstrun)
@@ -150,37 +178,10 @@ public:
         return frame;
     }
 
-    void start()
-    {
-        running = true;
-        firstrun = true;
-        avg = 0;
-        avg2 = 0;
-        count = 0;
-        thread = std::thread(ImageGenerator::generate_fn, this);
-    }
-
     void update_avg(double period)
     {
         uint64_t ncount = count++;
         avg = (avg * ncount + period) / (count);
         avg2 = (avg2 * ncount + period * period) / (count);
-    }
-
-    void get_stats(double &avg, double &stddev)
-    {
-        avg = this->avg;
-        stddev = sqrt(avg2 - avg * avg);
-    }
-
-    void join()
-    {
-        running = false;
-        thread.join();
-    }
-
-    bool isrunning()
-    {
-        return running;
     }
 };

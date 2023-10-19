@@ -58,11 +58,11 @@ public:
         case VmbPixelFormatRgb8:
             elem_size = 3;
             rmax = 0xff;
-            break; 
+            break;
         default:
             elem_size = 4;
             rmax = 0xff;
-            break;       
+            break;
         }
         data = new uint8_t[width * height * elem_size];
         this->img = img;
@@ -76,6 +76,11 @@ public:
 
     ~ImageGenerator()
     {
+        if (running)
+        {
+            running = false;
+            thread.join();
+        }
         delete[] data;
     }
 

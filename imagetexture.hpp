@@ -102,14 +102,23 @@ public:
         {
             // reading from this frame, lock!
             std::lock_guard<std::mutex> lock(mtx);
-            // drop the lock after this
-        }
-        // now try to lock again and do the update
-        if (!mtx.try_lock())
-        {
+            // now do stuff and get out
+            unsafe_update(frame);
             return;
         }
+        // not reading from this frame, check if it is rendering
+        else if (!mtx.try_lock())
+        {
+            return; // rendering, so don't update
+        }
+        // not rendering, so update
         eprintf("Updating image\n");
+        unsafe_update(frame);
+        mtx.unlock();
+    }
+
+    void unsafe_update(VmbFrame_t *frame)
+    {
         if (width != frame->width || height != frame->height || pixelFormat != frame->pixelFormat)
         {
             reset = true;
@@ -119,7 +128,6 @@ public:
         pixelFormat = frame->pixelFormat;
         data = (uint8_t *)frame->buffer;
         newdata = true;
-        mtx.unlock();
     }
 
     static void update(Image *self, VmbFrame_t *frame)

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "imgui/imgui.h"
 #include <stdio.h>
+#include <math.h>
 
 #include <alliedcam.h>
 
@@ -37,6 +38,7 @@ public:
 
     void display(Image *img)
     {
+        ImGui::SetNextWindowSizeConstraints(ImVec2(512, 512), ImVec2(INFINITY, INFINITY));
         ImGui::Begin("Image Display", &show);
         ImGui::Text("Image Display");
         GLuint texture = 0;
